@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Message for Nosh</title>
+    <style>
+        :root {
+            --primary: #ff4d6d;
+            --secondary: #ffccd5;
+            --text: #590d22;
+            --bg: #fff0f3;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background: var(--bg);
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            touch-action: none;
+        }
+
+        /* --- FLOWER & HEART RAIN --- */
+        .flower-bg {
+            position: fixed;
+            top: -10%;
+            user-select: none;
+            pointer-events: none;
+            z-index: -1;
+            filter: drop-shadow(0 0 5px rgba(255, 192, 203, 0.8));
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        /* Stage 1: The Jumping Letter */
+        #envelope-container {
+            cursor: pointer;
+            margin-top: 100px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .envelope {
+            font-size: 120px;
+            display: inline-block;
+            animation: jump 1.2s infinite ease-in-out;
+        }
+
+        @keyframes jump {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+        }
+
+        /* Stage 2: Cards Section */
+        #main-content {
+            display: none;
+            width: 100%;
+            max-width: 1000px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+            perspective: 1000px;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            width: 260px;
+            height: 300px;
+            perspective: 1000px;
+            transform: translateY(-150vh);
+            transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-radius: 20px;
+        }
+
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+            border: 2px solid var(--secondary);
+        }
+
+        .flip-card-front { background: white; color: var(--primary); font-weight: bold; }
+        .flip-card-back { background: var(--primary); color: white; transform: rotateY(180deg); }
+
+        #nextBtn {
+            display: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Stage 3: The Falling Game */
+        #game-stage {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+        }
+
+        #game-canvas {
+            position: relative;
+            width: 90%;
+            max-width: 400px;
+            height: 450px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            border: 3px solid var(--primary);
+            margin-top: 20px;
+            overflow: hidden;
+            cursor: none;
+        }
+
+        #bucket {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 50px;
+            pointer-events: none;
+            transition: left 0.1s ease-out;
+        }
+
+        .falling-emoji {
+            position: absolute;
+            font-size: 30px;
+            user-select: none;
+        }
+
+        /* Stage 4: Final Card */
+        #qBox {
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(255, 77, 109, 0.3);
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            margin-top: 40px;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+        .btn-group { margin-top: 25px; display: flex; justify-content: center; gap: 20px; }
+        .action-btn { padding: 15px 35px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 1.1rem; }
+        #yesBtn { background: var(--primary); color: white; }
+        #noBtn { background: #eee; color: #777; }
+        #success-msg { display: none; margin-top: 20px; font-size: 1.5rem; color: var(--primary); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source src="think.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="envelope-container" onclick="openLetter()">
+        <div class="envelope">✉️</div>
+        <p style="color:var(--primary); font-weight:bold;">A secret for Nosh... Click to open!</p>
+    </div>
+
+    <div id="main-content">
+        <h1 style="color: var(--primary);">For My Dearest Nosh</h1>
+        <p>Flip each card to see what's inside...</p>
+        <div class="card-container">
+            <div class="flip-card" id="card1"><div class="flip-card-inner"><div class="flip-card-front"><h3>✨ Admiration</h3></div><div class="flip-card-back"><p>I admire your soul.the way you listens, the way you smiles, and the way you makes people feel comfortable just by being yourselfself.your strength feels honest,your kindness feels sincere,nothing about you seems forced.like a calm presence that brings warmth and reassurance.you reminds me that the most meaningful kind of beauty comes from authenticity and a genuine heart.</p></div></div></div>
+            <div class="flip-card" id="card2"><div class="flip-card-inner"><div class="flip-card-front"><h3>❤️ Love</h3></div><div class="flip-card-back"><p>I love you in a way that feels natural and deeply. It is not just about how you look or what you say, but about how you make everything feel softer and more meaningful when you are around. Your presence brings comfort,your laughter brings light,even in silence there is a sense of understanding.Loving you feels like finding peace in a person, like knowing that your existence adds something beautiful and irreplaceable to my world.
+.</p></div></div></div>
+            <div class="flip-card" id="card3"><div class="flip-card-inner"><div class="flip-card-front"><h3>🌅 Our Future</h3></div><div class="flip-card-back"><p>I see us growing old together,I see a future with you that feels steady +and real. A future built on shared moments, quiet understanding, and growing together through both ease and struggle. I imagine laughter in ordinary days, support in difficult ones, and a bond that deepens with time rather than fades. With you, the future does not feel uncertain or distant, but warm and meaningful, like something worth choosing every single day.
+</p></div></div></div>
+        </div>
+        <button id="nextBtn" onclick="startMiniGame()">Wait, there's a challenge... Click Here</button>
+    </div>
+
+    <div id="game-stage">
+        <h2 style="color: var(--primary);">Catch 5 Hearts for Nosh!</h2>
+        <p>Score: <span id="score">0</span> / 5</p>
+        <div id="game-canvas">
+            <div id="bucket">🪣</div>
+        </div>
+    </div>
+
+    <div id="qBox">
+        <h2>Nosh, will you be my Valentine?</h2>
+        <div class="btn-group">
+            <button id="yesBtn" class="action-btn" onclick="celebrate()">Yes!</button>
+            <button id="noBtn" class="action-btn" onmouseover="dodge()">No</button>
+        </div>
+        <div id="success-msg">You've made me the luckiest person! ❤️</div>
+    </div>
+
+    <script>
+        let heartsCaught = 0;
+        let gameRunning = false;
+        const bucket = document.getElementById('bucket');
+        const canvas = document.getElementById('game-canvas');
+        const flowers = ['🌸', '🌹', '🌷', '🌻', '🌼', '❤️'];
+
+        function createFlower() {
+            const flower = document.createElement('div');
+            flower.classList.add('flower-bg');
+            flower.innerHTML = flowers[Math.floor(Math.random() * flowers.length)];
+            flower.style.left = Math.random() * 100 + 'vw';
+            flower.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            flower.style.animationDuration = Math.random() * 4 + 3 + 's';
+            flower.style.opacity = Math.random() * 0.5 + 0.5;
+            document.body.appendChild(flower);
+            setTimeout(() => flower.remove(), 7000);
+        }
+
+        function openLetter() {
+            document.getElementById('bgMusic').play().catch(e => console.log("Music ready"));
+            document.getElementById('envelope-container').style.display = 'none';
+            document.getElementById('main-content').style.display = 'flex';
+            
+            // Start the flower rain!
+            setInterval(createFlower, 200);
+
+            setTimeout(() => { document.getElementById('card1').style.transform = 'translateY(0)'; }, 300);
+            setTimeout(() => { document.getElementById('card2').style.transform = 'translateY(0)'; }, 800);
+            setTimeout(() => { document.getElementById('card3').style.transform = 'translateY(0)'; }, 1300);
+
+            setTimeout(() => {
+                const nextBtn = document.getElementById('nextBtn');
+                nextBtn.style.display = 'block';
+                setTimeout(() => { nextBtn.style.opacity = '1'; }, 10);
+            }, 2500);
+        }
+
+        function startMiniGame() {
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('game-stage').style.display = 'flex';
+            gameRunning = true;
+            
+            canvas.addEventListener('mousemove', (e) => {
+                let rect = canvas.getBoundingClientRect();
+                updateBucketPos(e.clientX - rect.left);
+            });
+            canvas.addEventListener('touchmove', (e) => {
+                let rect = canvas.getBoundingClientRect();
+                updateBucketPos(e.touches[0].clientX - rect.left);
+            });
+
+            spawnFallingEmoji();
+        }
+
+        function updateBucketPos(x) {
+            if (x >= 25 && x <= canvas.clientWidth - 25) {
+                bucket.style.left = x + 'px';
+            }
+        }
+
+        function spawnFallingEmoji() {
+            if (!gameRunning) return;
+
+            const emoji = document.createElement('div');
+            const isHeart = Math.random() > 0.4;
+            emoji.className = 'falling-emoji';
+            emoji.innerHTML = isHeart ? '❤️' : ['💣', '🥦', '⭐', '🎈'][Math.floor(Math.random()*4)];
+            emoji.style.left = Math.random() * (canvas.clientWidth - 30) + 'px';
+            emoji.style.top = '0px';
+            canvas.appendChild(emoji);
+
+            let speed = 3 + Math.random() * 2;
+            let fallInterval = setInterval(() => {
+                let top = parseFloat(emoji.style.top);
+                emoji.style.top = (top + speed) + 'px';
+
+                let bRect = bucket.getBoundingClientRect();
+                let eRect = emoji.getBoundingClientRect();
+
+                if (eRect.bottom >= bRect.top && eRect.left < bRect.right && eRect.right > bRect.left) {
+                    if (isHeart) {
+                        heartsCaught++;
+                        document.getElementById('score').innerText = heartsCaught;
+                    }
+                    clearInterval(fallInterval);
+                    emoji.remove();
+                    if (heartsCaught >= 5) winGame();
+                }
+
+                if (top > canvas.clientHeight) {
+                    clearInterval(fallInterval);
+                    emoji.remove();
+                }
+            }, 20);
+
+            if (gameRunning) setTimeout(spawnFallingEmoji, 800);
+        }
+
+        function winGame() {
+            gameRunning = false;
+            document.getElementById('game-stage').style.display = 'none';
+            document.getElementById('qBox').style.display = 'block';
+        }
+
+        function celebrate() {
+            document.getElementById('success-msg').style.display = 'block';
+            document.getElementById('noBtn').style.display = 'none';
+            document.querySelector('h2').innerText = "BEST DAY EVER! ❤️";
+            // Extra burst of flowers
+            for(let i=0; i<50; i++) setTimeout(createFlower, i*50);
+        }
+
+        function dodge() {
+            const noBtn = document.getElementById('noBtn');
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = Math.random() * (window.innerWidth - 120) + 'px';
+            noBtn.style.top = Math.random() * (window.innerHeight - 60) + 'px';
+        }
+    </script>
+</body>
+</html>
