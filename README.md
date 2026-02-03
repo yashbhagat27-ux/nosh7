@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Message for Nosh</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --primary: #ff4d6d;
@@ -22,7 +23,7 @@
             align-items: center;
             min-height: 100vh;
             overflow-x: hidden;
-            touch-action: none;
+            touch-action: manipulation;
         }
 
         /* --- FLOWER & HEART RAIN --- */
@@ -80,7 +81,7 @@
         .flip-card {
             background-color: transparent;
             width: 260px;
-            height: 300px;
+            height: 320px;
             perspective: 1000px;
             transform: translateY(-150vh);
             transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1);
@@ -116,7 +117,13 @@
         }
 
         .flip-card-front { background: white; color: var(--primary); font-weight: bold; }
-        .flip-card-back { background: var(--primary); color: white; transform: rotateY(180deg); }
+        .flip-card-back { 
+            background: var(--primary); 
+            color: white; 
+            transform: rotateY(180deg); 
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
 
         #nextBtn {
             display: none;
@@ -152,7 +159,7 @@
             border: 3px solid var(--primary);
             margin-top: 20px;
             overflow: hidden;
-            cursor: none;
+            cursor: crosshair;
         }
 
         #bucket {
@@ -189,7 +196,7 @@
         .btn-group { margin-top: 25px; display: flex; justify-content: center; gap: 20px; }
         .action-btn { padding: 15px 35px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 1.1rem; }
         #yesBtn { background: var(--primary); color: white; }
-        #noBtn { background: #eee; color: #777; }
+        #noBtn { background: #eee; color: #777; transition: all 0.2s ease; }
         #success-msg { display: none; margin-top: 20px; font-size: 1.5rem; color: var(--primary); font-weight: bold; }
     </style>
 </head>
@@ -208,11 +215,24 @@
         <h1 style="color: var(--primary);">For My Dearest Nosh</h1>
         <p>Flip each card to see what's inside...</p>
         <div class="card-container">
-            <div class="flip-card" id="card1"><div class="flip-card-inner"><div class="flip-card-front"><h3>✨ Admiration</h3></div><div class="flip-card-back"><p>I admire your soul.the way you listens, the way you smiles, and the way you makes people feel comfortable just by being yourself.your strength feels honest,your kindness feels sincere,nothing about you seems forced.like a calm presence that brings warmth and reassurance.you reminds me that the most meaningful kind of beauty comes from authenticity and a genuine heart.</p></div></div></div>
-            <div class="flip-card" id="card2"><div class="flip-card-inner"><div class="flip-card-front"><h3>❤️ Love</h3></div><div class="flip-card-back"><p>I love you in a way that feels natural and deeply. It is not just about how you look or what you say, but about how you make everything feel softer and more meaningful when you are around. Your presence brings comfort,your laughter brings light,even in silence there is a sense of understanding.Loving you feels like finding peace in a person, like knowing that your existence adds something beautiful and irreplaceable to my world.
-.</p></div></div></div>
-            <div class="flip-card" id="card3"><div class="flip-card-inner"><div class="flip-card-front"><h3>🌅 Our Future</h3></div><div class="flip-card-back"><p>I see a future with you that feels steady and real. A future built on shared moments, quiet understanding, and growing together through both ease and struggle. I imagine laughter in ordinary days, support in difficult ones, and a bond that deepens with time rather than fades. With you, the future does not feel uncertain or distant, but warm and meaningful, like something worth choosing every single day.
-</p></div></div></div>
+            <div class="flip-card" id="card1">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front"><h3>✨ Admiration</h3></div>
+                    <div class="flip-card-back"><p>I admire your soul.the way you listens, the way you smiles, and the way you makes people feel comfortable just by being yourself.your strength feels honest,your kindness feels sincere,nothing about you seems forced.like a calm presence that brings warmth and reassurance.you reminds me that the most meaningful kind of beauty comes from authenticity and a genuine heart.</p></div>
+                </div>
+            </div>
+            <div class="flip-card" id="card2">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front"><h3>❤️ Love</h3></div>
+                    <div class="flip-card-back"><p>I love you in a way that feels natural and deeply. It is not just about how you look or what you say, but about how you make everything feel softer and more meaningful when you are around. Your presence brings comfort,your laughter brings light,even in silence there is a sense of understanding.Loving you feels like finding peace in a person, like knowing that your existence adds something beautiful and irreplaceable to my world.</p></div>
+                </div>
+            </div>
+            <div class="flip-card" id="card3">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front"><h3>🌅 Our Future</h3></div>
+                    <div class="flip-card-back"><p>I see a future with you that feels steady and real. A future built on shared moments, quiet understanding, and growing together through both ease and struggle. I imagine laughter in ordinary days, support in difficult ones, and a bond that deepens with time rather than fades. With you, the future does not feel uncertain or distant, but warm and meaningful, like something worth choosing every single day.</p></div>
+                </div>
+            </div>
         </div>
         <button id="nextBtn" onclick="startMiniGame()">Wait, there's a challenge... Click Here</button>
     </div>
@@ -229,7 +249,7 @@
         <h2>Nosh, will you be my Valentine?</h2>
         <div class="btn-group">
             <button id="yesBtn" class="action-btn" onclick="celebrate()">Yes!</button>
-            <button id="noBtn" class="action-btn" onmouseover="dodge()">No</button>
+            <button id="noBtn" class="action-btn" onmouseover="dodge()" onclick="dodge()">No</button>
         </div>
         <div id="success-msg">You've made me the luckiest person! ❤️</div>
     </div>
@@ -258,7 +278,6 @@
             document.getElementById('envelope-container').style.display = 'none';
             document.getElementById('main-content').style.display = 'flex';
             
-            // Start the flower rain!
             setInterval(createFlower, 200);
 
             setTimeout(() => { document.getElementById('card1').style.transform = 'translateY(0)'; }, 300);
@@ -282,9 +301,10 @@
                 updateBucketPos(e.clientX - rect.left);
             });
             canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
                 let rect = canvas.getBoundingClientRect();
                 updateBucketPos(e.touches[0].clientX - rect.left);
-            });
+            }, {passive: false});
 
             spawnFallingEmoji();
         }
@@ -301,7 +321,7 @@
             const emoji = document.createElement('div');
             const isHeart = Math.random() > 0.4;
             emoji.className = 'falling-emoji';
-            emoji.innerHTML = isHeart ? '❤️' : ['💣', '🥦', '⭐', '🎈'][Math.floor(Math.random()*4)];
+            emoji.innerHTML = isHeart ? '❤️' : ['⭐', '🎈', '✨'][Math.floor(Math.random()*3)];
             emoji.style.left = Math.random() * (canvas.clientWidth - 30) + 'px';
             emoji.style.top = '0px';
             canvas.appendChild(emoji);
@@ -343,7 +363,40 @@
             document.getElementById('success-msg').style.display = 'block';
             document.getElementById('noBtn').style.display = 'none';
             document.querySelector('h2').innerText = "BEST DAY EVER! ❤️";
-            // Extra burst of flowers
+            
+            // THE CELEBRATION BOOM
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff4d6d', '#ffccd5', '#ffffff']
+            });
+
+            // Continuous side cannons
+            var duration = 3 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ff4d6d', '#ffccd5']
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ff4d6d', '#ffccd5']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+
             for(let i=0; i<50; i++) setTimeout(createFlower, i*50);
         }
 
