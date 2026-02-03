@@ -218,19 +218,19 @@
             <div class="flip-card" id="card1">
                 <div class="flip-card-inner">
                     <div class="flip-card-front"><h3>✨ Admiration</h3></div>
-                    <div class="flip-card-back"><p>I admire your soul.the way you listens, the way you smiles, and the way you makes people feel comfortable just by being yourself.your strength feels honest,your kindness feels sincere,nothing about you seems forced.like a calm presence that brings warmth and reassurance.you reminds me that the most meaningful kind of beauty comes from authenticity and a genuine heart.</p></div>
+                    <div class="flip-card-back"><p>I admire your soul. The way you listen, the way you smile, and the way you make people feel comfortable just by being yourself. Your strength feels honest, your kindness feels sincere. You're a calm presence that brings warmth and reassurance.</p></div>
                 </div>
             </div>
             <div class="flip-card" id="card2">
                 <div class="flip-card-inner">
                     <div class="flip-card-front"><h3>❤️ Love</h3></div>
-                    <div class="flip-card-back"><p>I love you in a way that feels natural and deeply. It is not just about how you look or what you say, but about how you make everything feel softer and more meaningful when you are around. Your presence brings comfort,your laughter brings light,even in silence there is a sense of understanding.Loving you feels like finding peace in a person, like knowing that your existence adds something beautiful and irreplaceable to my world.</p></div>
+                    <div class="flip-card-back"><p>I love you in a way that feels natural and deep. It’s about how you make everything feel softer and more meaningful. Loving you feels like finding peace in a person, knowing your existence adds something irreplaceable to my world.</p></div>
                 </div>
             </div>
             <div class="flip-card" id="card3">
                 <div class="flip-card-inner">
                     <div class="flip-card-front"><h3>🌅 Our Future</h3></div>
-                    <div class="flip-card-back"><p>I see a future with you that feels steady and real. A future built on shared moments, quiet understanding, and growing together through both ease and struggle. I imagine laughter in ordinary days, support in difficult ones, and a bond that deepens with time rather than fades. With you, the future does not feel uncertain or distant, but warm and meaningful, like something worth choosing every single day.</p></div>
+                    <div class="flip-card-back"><p>I see a future with you that feels steady and real. Built on shared moments, quiet understanding, and growing together through both ease and struggle. With you, the future feels warm, meaningful, and worth choosing every single day.</p></div>
                 </div>
             </div>
         </div>
